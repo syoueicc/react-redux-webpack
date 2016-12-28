@@ -1,0 +1,68 @@
+#!/usr/bin/env node
+
+require('shelljs/global');
+const program = require('commander');
+const chalk = require('chalk');
+const fs = require('fs');
+
+program
+  .usage('<template-type> [project-name]');
+
+ /**
+ * Help.
+ */
+program.on('--help', function () {
+  console.log('  示例:')
+  console.log()
+  console.log(chalk.gray('    # 新建component'))
+  console.log('    $ plu new component my-component')
+  console.log()
+  console.log(chalk.gray('    # 新建独立页面'))
+  console.log('    $ plu new page my-page')
+  console.log()
+})
+
+/**
+ * Help.
+ */
+function help () {
+  program.parse(process.argv)
+  if (program.args.length < 1) return program.help()
+}
+help()
+
+
+/**
+ * Padding.
+ */
+console.log()
+process.on('exit', function () {
+  console.log()
+})
+
+let type = program.args[0];
+let cmpt = program.args[1];
+
+if(program.args.length == 1) {
+  cmpt = type;
+  type = 'component';
+}
+if(!!cmpt) {
+  switch(true) {
+    case type == 'component':
+    case type == 'page':
+      break;
+    default:
+      console.log(chalk.red('错误:错误的参数!'));
+      return;
+  }
+
+  const has = fs.existsSync(`src/${type}/${cmpt}`)
+  if(has) {
+    console.log(chalk.red('err:已有同名组件'))
+  }else {
+    mkdir('-p', `src/${type}s/${cmpt}`);
+    cp('-R', `templates/${type}/*`, `src/${type}s/${cmpt}`);
+  }
+
+}

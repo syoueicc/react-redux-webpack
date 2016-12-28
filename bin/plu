@@ -1,0 +1,19 @@
+#!/usr/bin/env node
+
+const devFn = require('../lib/webpack-serve');
+const program =require('commander')
+const build = require('../lib/build');
+
+program.version(require("../package").version)
+  .usage('<command> [options]')
+  .command('new', '生成新的component,container')
+  .option('-b, --build <component>', '打包component')
+  .option('-d, --dev <component>', '启动开发模式')
+  .option('-p --port <port>', "配置端口号")
+  .parse(process.argv);
+
+if (program.dev && program.port) {
+  devFn(program.dev, program.port);
+}else if(program.dev) {
+  devFn(program.dev);
+}
